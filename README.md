@@ -18,7 +18,7 @@ import "github.com/goravel/cos"
 
 "providers": []foundation.ServiceProvider{
     ...
-    &sms.ServiceProvider{},
+    &cos.ServiceProvider{},
 }
 ```
 
