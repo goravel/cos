@@ -2,6 +2,7 @@ package cos
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,7 +13,6 @@ import (
 	"time"
 
 	"github.com/gookit/color"
-
 	"github.com/goravel/framework/contracts/config"
 	"github.com/goravel/framework/contracts/filesystem"
 	"github.com/goravel/framework/support/str"
@@ -36,14 +36,17 @@ type Cos struct {
 	accessKeySecret string
 }
 
-func NewCos(ctx context.Context, config config.Config) (*Cos, error) {
-	accessKeyId := config.GetString("cos.key")
-	accessKeySecret := config.GetString("cos.secret")
-	cosUrl := config.GetString("cos.url")
+func NewCos(ctx context.Context, config config.Config, disk string) (*Cos, error) {
+	accessKeyId := config.GetString(fmt.Sprintf("filesystems.disks.%s.key", disk))
+	accessKeySecret := config.GetString(fmt.Sprintf("filesystems.disks.%s.secret", disk))
+	cosUrl := config.GetString(fmt.Sprintf("filesystems.disks.%s.url", disk))
+	if accessKeyId == "" || accessKeySecret == "" || cosUrl == "" {
+		return nil, errors.New("please set cos configuration first")
+	}
 
 	u, err := url.Parse(cosUrl)
 	if err != nil {
-		return nil, fmt.Errorf("init cos disk error: %+v", err)
+		return nil, fmt.Errorf("init %s disk error: %v", disk, err)
 	}
 
 	b := &cos.BaseURL{BucketURL: u}
@@ -57,6 +60,7 @@ func NewCos(ctx context.Context, config config.Config) (*Cos, error) {
 	return &Cos{
 		ctx:             ctx,
 		config:          config,
+		disk:            disk,
 		instance:        client,
 		url:             cosUrl,
 		accessKeyId:     accessKeyId,
@@ -382,9 +386,9 @@ func (r *Cos) TemporaryUrl(file string, time time.Time) (string, error) {
 }
 
 func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
-	driver, err := NewCos(ctx, r.config)
+	driver, err := NewCos(ctx, r.config, r.disk)
 	if err != nil {
-		color.Redf("[filesystem] init %s disk fail: %+v\n", r.disk, err)
+		color.Redf("init %s disk fail: %+v\n", r.disk, err)
 
 		return nil
 	}

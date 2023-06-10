@@ -4,14 +4,16 @@ import (
 	"log"
 
 	"github.com/goravel/framework/contracts/filesystem"
+
+	"github.com/goravel/cos"
 )
 
-func Cos() filesystem.Driver {
-	instance, err := oss.App.Make(oss.Binding)
+func Cos(disk string) filesystem.Driver {
+	instance, err := cos.App.MakeWith(cos.Binding, map[string]any{"disk": disk})
 	if err != nil {
 		log.Fatalln(err)
 		return nil
 	}
 
-	return instance.(*oss.Oss)
+	return instance.(*cos.Cos)
 }

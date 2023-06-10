@@ -1,6 +1,6 @@
-# cos
+# COS
 
-A cos disk driver for facades.Storage of Goravel.
+A COS disk driver for facades.Storage of Goravel.
 
 ## Install
 
@@ -22,15 +22,7 @@ import "github.com/goravel/cos"
 }
 ```
 
-3. Publish configuration file
-dd
-```
-go run . artisan vendor:publish --package=github.com/goravel/cos
-```
-
-4. Fill your cos configuration to `config/cos.go` file
-
-5. Add cos disk to `config/filesystems.go` file
+3. Add cos disk to `config/filesystems.go` file
 
 ```
 // config/filesystems.go
@@ -43,8 +35,11 @@ import (
     ...
     "cos": map[string]any{
         "driver": "custom",
+        "key":    config.Env("TENCENT_ACCESS_KEY_ID"),
+        "secret": config.Env("TENCENT_ACCESS_KEY_SECRET"),
+        "url":    config.Env("TENCENT_URL"),
         "via": func() (filesystem.Driver, error) {
-            return cosfacades.Cos(), nil
+            return cosfacades.Cos("cos"), nil // The `cos` value is the `disks` key
         },
     },
 }

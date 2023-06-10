@@ -18,7 +18,7 @@ import (
 
 func TestStorage(t *testing.T) {
 	if os.Getenv("TENCENT_ACCESS_KEY_ID") == "" {
-		color.Redln("No filesystem tests run, please add oss configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_BUCKET= TENCENT_URL= go test ./...")
+		color.Redln("No filesystem tests run, please add cos configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_BUCKET= TENCENT_URL= go test ./...")
 		return
 	}
 
@@ -26,10 +26,10 @@ func TestStorage(t *testing.T) {
 
 	mockConfig := &configmocks.Config{}
 	mockConfig.On("GetString", "app.timezone").Return("UTC")
-	mockConfig.On("GetString", "cos.key").Return(os.Getenv("TENCENT_ACCESS_KEY_ID"))
-	mockConfig.On("GetString", "cos.secret").Return(os.Getenv("TENCENT_ACCESS_KEY_SECRET"))
-	mockConfig.On("GetString", "cos.bucket").Return(os.Getenv("TENCENT_BUCKET"))
-	mockConfig.On("GetString", "cos.url").Return(os.Getenv("TENCENT_URL"))
+	mockConfig.On("GetString", "filesystems.disks.cos.key").Return(os.Getenv("TENCENT_ACCESS_KEY_ID"))
+	mockConfig.On("GetString", "filesystems.disks.cos.secret").Return(os.Getenv("TENCENT_ACCESS_KEY_SECRET"))
+	mockConfig.On("GetString", "filesystems.disks.cos.bucket").Return(os.Getenv("TENCENT_BUCKET"))
+	mockConfig.On("GetString", "filesystems.disks.cos.url").Return(os.Getenv("TENCENT_URL"))
 
 	var driver contractsfilesystem.Driver
 	url := os.Getenv("TENCENT_URL")
@@ -369,7 +369,7 @@ func TestStorage(t *testing.T) {
 	}
 
 	var err error
-	driver, err = NewCos(context.Background(), mockConfig)
+	driver, err = NewCos(context.Background(), mockConfig, "cos")
 	assert.NotNil(t, driver)
 	assert.Nil(t, err)
 	for _, test := range tests {
