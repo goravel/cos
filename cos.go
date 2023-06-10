@@ -2,7 +2,6 @@ package cos
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -41,7 +40,7 @@ func NewCos(ctx context.Context, config config.Config, disk string) (*Cos, error
 	accessKeySecret := config.GetString(fmt.Sprintf("filesystems.disks.%s.secret", disk))
 	cosUrl := config.GetString(fmt.Sprintf("filesystems.disks.%s.url", disk))
 	if accessKeyId == "" || accessKeySecret == "" || cosUrl == "" {
-		return nil, errors.New("please set cos configuration first")
+		return nil, fmt.Errorf("please set %s configuration first", disk)
 	}
 
 	u, err := url.Parse(cosUrl)
@@ -388,7 +387,7 @@ func (r *Cos) TemporaryUrl(file string, time time.Time) (string, error) {
 func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
 	driver, err := NewCos(ctx, r.config, r.disk)
 	if err != nil {
-		color.Redf("init %s disk fail: %+v\n", r.disk, err)
+		color.Redf("init %s disk fail: %v\n", r.disk, err)
 
 		return nil
 	}
