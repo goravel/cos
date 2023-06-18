@@ -14,9 +14,8 @@ import (
 	"github.com/gookit/color"
 	"github.com/goravel/framework/contracts/config"
 	"github.com/goravel/framework/contracts/filesystem"
+	"github.com/goravel/framework/support/carbon"
 	"github.com/goravel/framework/support/str"
-	supporttime "github.com/goravel/framework/support/time"
-
 	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
@@ -376,7 +375,7 @@ func (r *Cos) Size(file string) (int64, error) {
 
 func (r *Cos) TemporaryUrl(file string, time time.Time) (string, error) {
 	// 获取预签名URL
-	presignedURL, err := r.instance.Object.GetPresignedURL(r.ctx, http.MethodGet, file, r.accessKeyId, r.accessKeySecret, time.Sub(supporttime.Now()), nil)
+	presignedURL, err := r.instance.Object.GetPresignedURL(r.ctx, http.MethodGet, file, r.accessKeyId, r.accessKeySecret, time.Sub(carbon.Now().ToStdTime()), nil)
 	if err != nil {
 		return "", err
 	}
