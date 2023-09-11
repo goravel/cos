@@ -3,7 +3,7 @@ package cos
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -258,7 +258,7 @@ func (r *Cos) Get(file string) (string, error) {
 		return "", err
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
@@ -401,7 +401,7 @@ func (r *Cos) Url(file string) string {
 }
 
 func (r *Cos) tempFile(content string) (*os.File, error) {
-	tempFile, err := ioutil.TempFile(os.TempDir(), "goravel-")
+	tempFile, err := os.CreateTemp(os.TempDir(), "goravel-")
 	if err != nil {
 		return nil, err
 	}

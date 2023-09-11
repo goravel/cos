@@ -1,12 +1,13 @@
 # COS
 
-A COS disk driver for facades.Storage of Goravel.
+A COS disk driver for `facades.Storage()` of Goravel.
 
 ## Version
 
 | goravel/cos  | goravel/framework    |
 | ----------   | --------------       |
-| v1.0.0       | v1.12.0             |
+| v1.1.*       | v1.13.*              |
+| v1.0.*       | v1.12.*              |
 
 ## Install
 
