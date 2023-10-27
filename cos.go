@@ -250,23 +250,29 @@ func (r *Cos) Files(path string) ([]string, error) {
 }
 
 func (r *Cos) Get(file string) (string, error) {
+	data, err := r.GetBytes(file)
+
+	return string(data), err
+}
+
+func (r *Cos) GetBytes(file string) ([]byte, error) {
 	opt := &cos.ObjectGetOptions{
 		ResponseContentType: "text/html",
 	}
 	resp, err := r.instance.Object.Get(r.ctx, file, opt)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := resp.Body.Close(); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(data), nil
+	return data, nil
 }
 
 func (r *Cos) LastModified(file string) (time.Time, error) {
