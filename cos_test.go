@@ -12,8 +12,8 @@ import (
 	"github.com/gookit/color"
 	"github.com/stretchr/testify/assert"
 
-	configmocks "github.com/goravel/framework/contracts/config/mocks"
-	contractsfilesystem "github.com/goravel/framework/contracts/filesystem"
+	filesystemcontract "github.com/goravel/framework/contracts/filesystem"
+	configmock "github.com/goravel/framework/mocks/config"
 )
 
 func TestStorage(t *testing.T) {
@@ -24,14 +24,14 @@ func TestStorage(t *testing.T) {
 
 	assert.Nil(t, os.WriteFile("test.txt", []byte("Goravel"), 0644))
 
-	mockConfig := &configmocks.Config{}
+	mockConfig := &configmock.Config{}
 	mockConfig.On("GetString", "app.timezone").Return("UTC")
 	mockConfig.On("GetString", "filesystems.disks.cos.key").Return(os.Getenv("TENCENT_ACCESS_KEY_ID"))
 	mockConfig.On("GetString", "filesystems.disks.cos.secret").Return(os.Getenv("TENCENT_ACCESS_KEY_SECRET"))
 	mockConfig.On("GetString", "filesystems.disks.cos.bucket").Return(os.Getenv("TENCENT_BUCKET"))
 	mockConfig.On("GetString", "filesystems.disks.cos.url").Return(os.Getenv("TENCENT_URL"))
 
-	var driver contractsfilesystem.Driver
+	var driver filesystemcontract.Driver
 	url := os.Getenv("TENCENT_URL")
 
 	tests := []struct {
@@ -401,7 +401,7 @@ type File struct {
 	path string
 }
 
-func (f *File) Disk(disk string) contractsfilesystem.File {
+func (f *File) Disk(disk string) filesystemcontract.File {
 	return &File{}
 }
 
