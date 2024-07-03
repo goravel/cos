@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/gookit/color v1.5.4
-	github.com/goravel/framework v1.14.1
+	github.com/goravel/framework v1.14.2
 	github.com/stretchr/testify v1.9.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.52
 )
