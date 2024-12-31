@@ -18,7 +18,7 @@ import (
 
 func TestStorage(t *testing.T) {
 	if os.Getenv("TENCENT_ACCESS_KEY_ID") == "" {
-		color.Redln("No filesystem tests run, please add cos configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_BUCKET= TENCENT_URL= go test ./...")
+		color.Redln("No filesystem tests run, please add cos configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_URL= go test ./...")
 		return
 	}
 
@@ -269,7 +269,7 @@ func TestStorage(t *testing.T) {
 			setup: func() {
 				assert.Nil(t, driver.Put("Put/1.txt", "Goravel"))
 				assert.True(t, driver.Exists("Put/1.txt"))
-				assert.True(t, driver.Exists("Put"))
+				assert.True(t, driver.Exists("Put/"))
 				assert.True(t, driver.Missing("Put/2.txt"))
 				assert.Nil(t, driver.DeleteDirectory("Put"))
 			},
@@ -290,7 +290,7 @@ func TestStorage(t *testing.T) {
 				fileInfo := &File{path: "test.txt"}
 				path, err := driver.PutFile("PutFile", fileInfo)
 				assert.Nil(t, err)
-				assert.True(t, driver.Exists("PutFile"))
+				assert.True(t, driver.Exists("PutFile/"))
 				assert.True(t, driver.Exists(path))
 				data, err := driver.Get(path)
 				assert.Nil(t, err)

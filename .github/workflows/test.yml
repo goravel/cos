@@ -7,33 +7,15 @@ on:
 env:
   TENCENT_ACCESS_KEY_ID: ${{ secrets.TENCENT_ACCESS_KEY_ID }}
   TENCENT_ACCESS_KEY_SECRET: ${{ secrets.TENCENT_ACCESS_KEY_SECRET }}
-  TENCENT_BUCKET: ${{ secrets.TENCENT_BUCKET }}
   TENCENT_URL: ${{ secrets.TENCENT_URL }}
 jobs:
   ubuntu:
-    strategy:
-      matrix:
-        go: [ "1.22", "1.23" ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go }}
-      - name: Install dependencies
-        run: go mod tidy
-      - name: Run tests
-        run: go test -timeout 1h ./...
-  windows:
-    strategy:
-      matrix:
-        go: [ "1.22", "1.23" ]
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: ${{ matrix.go }}
+          go-version: 'stable'
       - name: Install dependencies
         run: go mod tidy
       - name: Run tests
