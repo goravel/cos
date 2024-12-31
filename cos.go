@@ -205,7 +205,10 @@ func (r *Cos) Directories(path string) ([]string, error) {
 			return nil, err
 		}
 		for _, commonPrefix := range v.CommonPrefixes {
-			directories = append(directories, strings.ReplaceAll(commonPrefix, validPath, ""))
+			directory := strings.ReplaceAll(commonPrefix, validPath, "")
+			if directory != "" {
+				directories = append(directories, directory)
+			}
 		}
 		isTruncated = v.IsTruncated
 		marker = v.NextMarker
@@ -240,7 +243,10 @@ func (r *Cos) Files(path string) ([]string, error) {
 			return nil, err
 		}
 		for _, content := range v.Contents {
-			files = append(files, strings.ReplaceAll(content.Key, validPath, ""))
+			file := strings.ReplaceAll(content.Key, validPath, "")
+			if file != "" {
+				files = append(files, file)
+			}
 		}
 		isTruncated = v.IsTruncated
 		marker = v.NextMarker
@@ -332,6 +338,18 @@ func (r *Cos) Path(file string) string {
 }
 
 func (r *Cos) Put(file string, content string) error {
+	// If the file is created in a folder directly, we can't check if the folder exists.
+	// So we need to create the top folder first.
+	if !strings.HasSuffix(file, "/") {
+		index := strings.Index(file, "/")
+		if index != -1 {
+			folder := file[:index+1]
+			if err := r.MakeDirectory(folder); err != nil {
+				return err
+			}
+		}
+	}
+
 	tempFile, err := r.tempFile(content)
 	defer os.Remove(tempFile.Name())
 	if err != nil {
@@ -353,6 +371,18 @@ func (r *Cos) PutFileAs(filePath string, source filesystem.File, name string) (s
 	fullPath, err := fullPathOfFile(filePath, source, name)
 	if err != nil {
 		return "", err
+	}
+
+	// If the file is created in a folder directly, we can't check if the folder exists.
+	// So we need to create the top folder first.
+	if !strings.HasSuffix(fullPath, "/") {
+		index := strings.Index(fullPath, "/")
+		if index != -1 {
+			folder := fullPath[:index+1]
+			if err := r.MakeDirectory(folder); err != nil {
+				return "", err
+			}
+		}
 	}
 
 	if _, _, err := r.instance.Object.Upload(
