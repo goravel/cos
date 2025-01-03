@@ -340,14 +340,8 @@ func (r *Cos) Path(file string) string {
 func (r *Cos) Put(file string, content string) error {
 	// If the file is created in a folder directly, we can't check if the folder exists.
 	// So we need to create the top folder first.
-	if !strings.HasSuffix(file, "/") {
-		index := strings.Index(file, "/")
-		if index != -1 {
-			folder := file[:index+1]
-			if err := r.MakeDirectory(folder); err != nil {
-				return err
-			}
-		}
+	if err := r.makeDirectories(file); err != nil {
+		return err
 	}
 
 	tempFile, err := r.tempFile(content)
@@ -375,14 +369,8 @@ func (r *Cos) PutFileAs(filePath string, source filesystem.File, name string) (s
 
 	// If the file is created in a folder directly, we can't check if the folder exists.
 	// So we need to create the top folder first.
-	if !strings.HasSuffix(fullPath, "/") {
-		index := strings.Index(fullPath, "/")
-		if index != -1 {
-			folder := fullPath[:index+1]
-			if err := r.MakeDirectory(folder); err != nil {
-				return "", err
-			}
-		}
+	if err := r.makeDirectories(str.Of(filePath).Finish("/").String()); err != nil {
+		return "", err
 	}
 
 	if _, _, err := r.instance.Object.Upload(
@@ -434,6 +422,18 @@ func (r *Cos) Url(file string) string {
 	objectUrl := r.instance.Object.GetObjectURL(file)
 
 	return objectUrl.String()
+}
+
+func (r *Cos) makeDirectories(path string) error {
+	folders := strings.Split(path, "/")
+	for i := 1; i < len(folders); i++ {
+		folder := strings.Join(folders[:i], "/")
+		if err := r.MakeDirectory(folder); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (r *Cos) tempFile(content string) (*os.File, error) {
