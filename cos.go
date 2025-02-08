@@ -14,6 +14,7 @@ import (
 	"github.com/gookit/color"
 	"github.com/goravel/framework/contracts/config"
 	"github.com/goravel/framework/contracts/filesystem"
+	contractshttp "github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/support/carbon"
 	"github.com/goravel/framework/support/str"
 	"github.com/tencentyun/cos-go-sdk-v5"
@@ -408,6 +409,10 @@ func (r *Cos) TemporaryUrl(file string, time time.Time) (string, error) {
 }
 
 func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
+	if httpCtx, ok := ctx.(contractshttp.Context); ok {
+		ctx = httpCtx.Context()
+	}
+
 	driver, err := NewCos(ctx, r.config, r.disk)
 	if err != nil {
 		color.Redf("init %s disk fail: %v\n", r.disk, err)
