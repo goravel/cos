@@ -6,7 +6,7 @@ toolchain go1.24.2
 
 require (
 	github.com/gookit/color v1.5.4
-	github.com/goravel/framework v1.15.6
+	github.com/goravel/framework v1.15.7
 	github.com/stretchr/testify v1.10.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.64
 )
@@ -14,7 +14,7 @@ require (
 require (
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/dromara/carbon/v2 v2.5.2 // indirect
+	github.com/dromara/carbon/v2 v2.5.6 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
