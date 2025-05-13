@@ -48,7 +48,7 @@ import (
         "secret": config.Env("TENCENT_ACCESS_KEY_SECRET"),
         "url":    config.Env("TENCENT_URL"),
         "via": func() (filesystem.Driver, error) {
-            return cosfacades.Cos("cos"), nil // The `cos` value is the `disks` key
+            return cosfacades.Cos("cos") // The `cos` value is the `disks` key
         },
     },
 }
