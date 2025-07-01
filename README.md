@@ -6,6 +6,7 @@ A COS disk driver for `facades.Storage()` of Goravel.
 
 | goravel/cos | goravel/framework |
 |-------------|-------------------|
+| v1.4.*      | v1.16.*           |
 | v1.3.*      | v1.15.*           |
 | v1.2.*      | v1.14.*           |
 | v1.1.*      | v1.13.*           |
@@ -13,51 +14,18 @@ A COS disk driver for `facades.Storage()` of Goravel.
 
 ## Install
 
-1. Add package
+Run the command below in your project to install the package automatically:
 
 ```
-go get -u github.com/goravel/cos
+./artisan package:install github.com/goravel/cos
 ```
 
-2. Register service provider
-
-```
-// config/app.go
-import "github.com/goravel/cos"
-
-"providers": []foundation.ServiceProvider{
-    ...
-    &cos.ServiceProvider{},
-}
-```
-
-3. Add cos disk to `config/filesystems.go` file
-
-```
-// config/filesystems.go
-import (
-    "github.com/goravel/framework/contracts/filesystem"
-    cosfacades "github.com/goravel/cos/facades"
-)
-
-"disks": map[string]any{
-    ...
-    "cos": map[string]any{
-        "driver": "custom",
-        "key":    config.Env("TENCENT_ACCESS_KEY_ID"),
-        "secret": config.Env("TENCENT_ACCESS_KEY_SECRET"),
-        "url":    config.Env("TENCENT_URL"),
-        "via": func() (filesystem.Driver, error) {
-            return cosfacades.Cos("cos") // The `cos` value is the `disks` key
-        },
-    },
-}
-```
+Or check [the setup file](./setup/setup.go) to install the package manually.
 
 ## Testing
 
-Run command below to run test(fill your owner cos configuration):
+Run command below to run test:
 
 ```
-TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_BUCKET= TENCENT_URL= go test ./...
+TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_URL= go test ./...
 ```
