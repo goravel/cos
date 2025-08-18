@@ -346,7 +346,9 @@ func (r *Cos) Put(file string, content string) error {
 	}
 
 	tempFile, err := r.tempFile(content)
-	defer os.Remove(tempFile.Name())
+	defer func() {
+		_ = os.Remove(tempFile.Name())
+	}()
 	if err != nil {
 		return err
 	}
