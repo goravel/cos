@@ -2,7 +2,7 @@ module github.com/goravel/cos
 
 go 1.23.0
 
-toolchain go1.25.0
+toolchain go1.25.1
 
 require (
 	github.com/gookit/color v1.5.4
