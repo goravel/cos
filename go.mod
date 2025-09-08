@@ -7,7 +7,7 @@ toolchain go1.25.1
 require (
 	github.com/gookit/color v1.5.4
 	github.com/goravel/framework v1.16.1
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.69
 )
 
