@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gookit/color"
 	"github.com/goravel/framework/contracts/config"
 	"github.com/goravel/framework/contracts/filesystem"
 	contractshttp "github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/support/carbon"
+	"github.com/goravel/framework/support/color"
 	"github.com/goravel/framework/support/str"
 	"github.com/tencentyun/cos-go-sdk-v5"
 )
@@ -417,7 +417,7 @@ func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
 
 	driver, err := NewCos(ctx, r.config, r.disk)
 	if err != nil {
-		color.Redf("init %s disk fail: %v\n", r.disk, err)
+		color.Red().Printfln("init %s disk fail: %v", r.disk, err)
 
 		return nil
 	}
