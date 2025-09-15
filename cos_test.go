@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gookit/color"
+	"github.com/goravel/framework/support/color"
 	"github.com/stretchr/testify/assert"
 
 	filesystemcontract "github.com/goravel/framework/contracts/filesystem"
@@ -18,7 +18,7 @@ import (
 
 func TestStorage(t *testing.T) {
 	if os.Getenv("TENCENT_ACCESS_KEY_ID") == "" {
-		color.Redln("No filesystem tests run, please add cos configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_URL= go test ./...")
+		color.Red().Println("No filesystem tests run, please add cos configuration: TENCENT_ACCESS_KEY_ID= TENCENT_ACCESS_KEY_SECRET= TENCENT_URL= go test ./...")
 		return
 	}
 
