@@ -27,7 +27,8 @@ func main() {
 				Find(match.Providers()).Modify(modify.Register("&cos.ServiceProvider{}")),
 			modify.GoFile(path.Config("filesystems.go")).
 				Find(match.Imports()).Modify(modify.AddImport("github.com/goravel/framework/contracts/filesystem"), modify.AddImport("github.com/goravel/cos/facades", "cosfacades")).
-				Find(match.Config("filesystems.disks")).Modify(modify.AddConfig("cos", config)),
+				Find(match.Config("filesystems.disks")).Modify(modify.AddConfig("cos", config)).
+				Find(match.Config("filesystems")).Modify(modify.AddConfig("default", `"cos"`)),
 		).
 		Uninstall(
 			modify.GoFile(path.Config("app.go")).
@@ -35,7 +36,8 @@ func main() {
 				Find(match.Imports()).Modify(modify.RemoveImport(packages.GetModulePath())),
 			modify.GoFile(path.Config("filesystems.go")).
 				Find(match.Config("filesystems.disks")).Modify(modify.RemoveConfig("cos")).
-				Find(match.Imports()).Modify(modify.RemoveImport("github.com/goravel/framework/contracts/filesystem"), modify.RemoveImport("github.com/goravel/cos/facades", "cosfacades")),
+				Find(match.Imports()).Modify(modify.RemoveImport("github.com/goravel/framework/contracts/filesystem"), modify.RemoveImport("github.com/goravel/cos/facades", "cosfacades")).
+				Find(match.Config("filesystems")).Modify(modify.AddConfig("default", `""`)),
 		).
 		Execute()
 }
