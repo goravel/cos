@@ -2,7 +2,7 @@ module github.com/goravel/cos
 
 go 1.23.0
 
-toolchain go1.25.3
+toolchain go1.25.4
 
 require (
 	github.com/goravel/framework v1.16.5
