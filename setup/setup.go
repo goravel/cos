@@ -6,10 +6,12 @@ import (
 	"github.com/goravel/framework/packages"
 	"github.com/goravel/framework/packages/match"
 	"github.com/goravel/framework/packages/modify"
+	"github.com/goravel/framework/support/env"
 	"github.com/goravel/framework/support/path"
 )
 
-var config = `map[string]any{
+func main() {
+	config := `map[string]any{
         "driver": "custom",
         "key":    config.Env("TENCENT_ACCESS_KEY_ID"),
         "secret": config.Env("TENCENT_ACCESS_KEY_SECRET"),
@@ -19,25 +21,58 @@ var config = `map[string]any{
         },
     }`
 
-func main() {
+	appConfigPath := path.Config("app.go")
+	filesystemsConfigPath := path.Config("filesystems.go")
+	modulePath := packages.GetModulePath()
+	cosServiceProvider := "&cos.ServiceProvider{}"
+	filesystemContract := "github.com/goravel/framework/contracts/filesystem"
+	cosFacades := "github.com/goravel/cos/facades"
+	filesystemsDisksConfig := match.Config("filesystems.disks")
+	filesystemsConfig := match.Config("filesystems")
+
 	packages.Setup(os.Args).
 		Install(
-			modify.GoFile(path.Config("app.go")).
-				Find(match.Imports()).Modify(modify.AddImport(packages.GetModulePath())).
-				Find(match.Providers()).Modify(modify.Register("&cos.ServiceProvider{}")),
-			modify.GoFile(path.Config("filesystems.go")).
-				Find(match.Imports()).Modify(modify.AddImport("github.com/goravel/framework/contracts/filesystem"), modify.AddImport("github.com/goravel/cos/facades", "cosfacades")).
-				Find(match.Config("filesystems.disks")).Modify(modify.AddConfig("cos", config)).
-				Find(match.Config("filesystems")).Modify(modify.AddConfig("default", `"cos"`)),
+			// Add cos service provider to app.go if not using bootstrap setup
+			modify.When(func(_ map[string]any) bool {
+				return !env.IsBootstrapSetup()
+			}, modify.GoFile(appConfigPath).
+				Find(match.Imports()).Modify(modify.AddImport(modulePath)).
+				Find(match.Providers()).Modify(modify.Register(cosServiceProvider))),
+
+			// Add cos service provider to providers.go if using bootstrap setup
+			modify.When(func(_ map[string]any) bool {
+				return env.IsBootstrapSetup()
+			}, modify.AddProviderApply(modulePath, cosServiceProvider)),
+
+			// Add cos disk to filesystems.go
+			modify.GoFile(filesystemsConfigPath).Find(match.Imports()).Modify(
+				modify.AddImport(filesystemContract),
+				modify.AddImport(cosFacades, "cosfacades"),
+			).
+				Find(filesystemsDisksConfig).Modify(modify.AddConfig("cos", config)).
+				Find(filesystemsConfig).Modify(modify.AddConfig("default", `"cos"`)),
 		).
 		Uninstall(
-			modify.GoFile(path.Config("app.go")).
-				Find(match.Providers()).Modify(modify.Unregister("&cos.ServiceProvider{}")).
-				Find(match.Imports()).Modify(modify.RemoveImport(packages.GetModulePath())),
-			modify.GoFile(path.Config("filesystems.go")).
-				Find(match.Config("filesystems.disks")).Modify(modify.RemoveConfig("cos")).
-				Find(match.Imports()).Modify(modify.RemoveImport("github.com/goravel/framework/contracts/filesystem"), modify.RemoveImport("github.com/goravel/cos/facades", "cosfacades")).
-				Find(match.Config("filesystems")).Modify(modify.AddConfig("default", `"local"`)),
+			// Remove cos disk from filesystems.go
+			modify.GoFile(filesystemsConfigPath).
+				Find(filesystemsConfig).Modify(modify.AddConfig("default", `"local"`)).
+				Find(filesystemsDisksConfig).Modify(modify.RemoveConfig("cos")).
+				Find(match.Imports()).Modify(
+				modify.RemoveImport(filesystemContract),
+				modify.RemoveImport(cosFacades, "cosfacades"),
+			),
+
+			// Remove cos service provider from app.go if not using bootstrap setup
+			modify.When(func(_ map[string]any) bool {
+				return !env.IsBootstrapSetup()
+			}, modify.GoFile(appConfigPath).
+				Find(match.Providers()).Modify(modify.Unregister(cosServiceProvider)).
+				Find(match.Imports()).Modify(modify.RemoveImport(modulePath))),
+
+			// Remove cos service provider from providers.go if using bootstrap setup
+			modify.When(func(_ map[string]any) bool {
+				return env.IsBootstrapSetup()
+			}, modify.RemoveProviderApply(modulePath, cosServiceProvider)),
 		).
 		Execute()
 }
