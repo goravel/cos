@@ -53,13 +53,13 @@ func main() {
 			Find(filesystemsConfig).Modify(modify.AddConfig("default", `"cos"`)),
 	).Uninstall(
 		// Remove cos disk from filesystems.go
-		modify.GoFile(filesystemsConfigPath).
+		modify.WhenFileExists(filesystemsConfigPath, modify.GoFile(filesystemsConfigPath).
 			Find(filesystemsConfig).Modify(modify.AddConfig("default", `"local"`)).
 			Find(filesystemsDisksConfig).Modify(modify.RemoveConfig("cos")).
 			Find(match.Imports()).Modify(
 			modify.RemoveImport(filesystemContract),
 			modify.RemoveImport(cosFacades, "cosfacades"),
-		),
+		)),
 
 		// Remove cos service provider from app.go if not using bootstrap setup
 		modify.When(func(_ map[string]any) bool {
