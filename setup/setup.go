@@ -42,7 +42,7 @@ func main() {
 		// Add cos service provider to providers.go if using bootstrap setup
 		modify.When(func(_ map[string]any) bool {
 			return env.IsBootstrapSetup()
-		}, modify.AddProviderApply(moduleImport, cosServiceProvider)),
+		}, modify.RegisterProvider(moduleImport, cosServiceProvider)),
 
 		// Add cos disk to filesystems.go
 		modify.GoFile(filesystemsConfigPath).Find(match.Imports()).Modify(
@@ -71,6 +71,6 @@ func main() {
 		// Remove cos service provider from providers.go if using bootstrap setup
 		modify.When(func(_ map[string]any) bool {
 			return env.IsBootstrapSetup()
-		}, modify.RemoveProviderApply(moduleImport, cosServiceProvider)),
+		}, modify.UnregisterProvider(moduleImport, cosServiceProvider)),
 	).Execute()
 }
