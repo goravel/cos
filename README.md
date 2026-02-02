@@ -6,6 +6,7 @@ A COS disk driver for `facades.Storage()` of Goravel.
 
 | goravel/cos | goravel/framework |
 |-------------|-------------------|
+| v1.17.x     | v1.17.x           |
 | v1.4.*      | v1.16.*           |
 | v1.3.*      | v1.15.*           |
 | v1.2.*      | v1.14.*           |
