@@ -7,7 +7,7 @@ toolchain go1.26.1
 require (
 	github.com/goravel/framework v1.17.2
 	github.com/stretchr/testify v1.11.1
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.72
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.73
 )
 
 require (
