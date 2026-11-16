@@ -5,7 +5,7 @@ go 1.25.0
 toolchain go1.27.4
 
 require (
-	github.com/goravel/framework v1.18.0
+	github.com/goravel/framework v1.18.1
 	github.com/stretchr/testify v1.12.1
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.76
 )
@@ -28,8 +28,8 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/containerd/console v1.0.5 // indirect
 	github.com/dave/dst v0.27.4 // indirect
-	github.com/dromara/carbon/v2 v2.6.11 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
+	github.com/dromara/carbon/v2 v2.6.17 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
